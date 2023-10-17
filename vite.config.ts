@@ -20,6 +20,6 @@ export default defineConfig({
 		include: ['schart.js']
 	},
 	server: {
-		port: 8080
+		port: 8090
 	}
 });
