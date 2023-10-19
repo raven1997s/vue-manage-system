@@ -5,13 +5,22 @@ import Home from '../views/home.vue';
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
-        redirect: '/user-table',
+        redirect: '/raven-home',
     },
     {
         path: '/',
         name: 'Home',
         component: Home,
         children: [
+            {
+                path: '/raven-home',
+                name: 'ravenhome',
+                meta: {
+                    title: '首页',
+                    permiss: '1',
+                },
+                component: () => import(/* webpackChunkName: "raven-home" */ '../views/raven-home.vue'),
+            },
             {
                 path: '/user-table',
                 name: 'usertable',

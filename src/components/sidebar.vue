@@ -59,6 +59,12 @@ import { useRoute } from 'vue-router';
 const items = [
     {
         icon: 'User',
+        index: '/raven-home',
+        title: '主页',
+        permiss: '1',
+    },
+    {
+        icon: 'User',
         index: '/user-table',
         title: '用户列表',
         permiss: '1',
