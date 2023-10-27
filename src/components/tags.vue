@@ -75,7 +75,7 @@ onBeforeRouteUpdate(to => {
 // 关闭全部标签
 const closeAll = () => {
 	tags.clearTags();
-	router.push('/');
+	router.push('/');ç
 };
 // 关闭其他标签
 const closeOther = () => {

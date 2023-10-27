@@ -58,7 +58,7 @@ import { useRoute } from 'vue-router';
 
 const items = [
     {
-        icon: 'User',
+        icon: 'House',
         index: '/raven-home',
         title: '主页',
         permiss: '1',

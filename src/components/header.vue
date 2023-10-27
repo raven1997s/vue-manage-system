@@ -2,8 +2,12 @@
 	<div class="header">
 		<!-- 折叠按钮 -->
 		<div class="collapse-btn" @click="collapseChage">
-			<el-icon v-if="sidebar.collapse"><Expand /></el-icon>
-			<el-icon v-else><Fold /></el-icon>
+			<el-icon v-if="sidebar.collapse">
+				<Expand />
+			</el-icon>
+			<el-icon v-else>
+				<Fold />
+			</el-icon>
 		</div>
 		<div class="logo">愿望池后台管理系统</div>
 		<div class="header-right">
@@ -21,8 +25,13 @@
 				</div> -->
 				<!-- 用户头像 -->
 				<el-avatar class="user-avator" :size="30" :src="imgurl" />
+
+				<el-select  v-model="selected" @change="handleChange" value-key="id" class="user-name">
+					<el-option v-for="user in users" :key="user.id" :label="user.name" :value="user">
+					</el-option>
+				</el-select>
 				<!-- 用户名下拉菜单 -->
-				<el-dropdown class="user-name" trigger="click" @command="handleCommand">
+				<!-- <el-dropdown class="user-name" trigger="click" @command="handleCommand">
 					<span class="el-dropdown-link">
 						{{ username }}
 						<el-icon class="el-icon--right">
@@ -31,23 +40,42 @@
 					</span>
 					<template #dropdown>
 						<el-dropdown-menu>
-							<!-- <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
-								<el-dropdown-item>项目仓库</el-dropdown-item>
-							</a> -->
 							<el-dropdown-item command="user">个人中心</el-dropdown-item>
 							<el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
 						</el-dropdown-menu>
 					</template>
-				</el-dropdown>
+				</el-dropdown> -->
 			</div>
 		</div>
 	</div>
 </template>
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useSidebarStore } from '../store/sidebar';
 import { useRouter } from 'vue-router';
 import imgurl from '../assets/img/img.jpg';
+import { getUserList } from '../api/user';
+import { useUserStore } from '../store/user-info';
+import { it } from 'date-fns/locale';
+
+const userStore = useUserStore();
+interface User {
+	name: string;
+	id: number;
+}
+
+const selected = ref<User | null>(null)
+const users = ref<User[]>([]);
+
+const handleChange = (item:User) => {
+	console.log(JSON.stringify(item));
+	
+	// const userId = item.id;
+	// const userName = item.name;
+	selected.value = item;
+	userStore.saveUserInfo(item.name, item.id);
+};
+
 
 const username: string | null = localStorage.getItem('ms_username');
 const message: number = 2;
@@ -59,6 +87,13 @@ const collapseChage = () => {
 };
 
 onMounted(() => {
+	getUserList({
+		pageNum: 1,
+		pageSize: 10
+	}).then(res => {
+		users.value = res.data.list;
+	})
+
 	if (document.body.clientWidth < 1500) {
 		collapseChage();
 	}
@@ -93,25 +128,30 @@ const handleCommand = (command: string) => {
 	padding: 0 21px;
 	cursor: pointer;
 }
+
 .header .logo {
 	float: left;
 	width: 250px;
 	line-height: 70px;
 }
+
 .header-right {
 	float: right;
 	padding-right: 50px;
 }
+
 .header-user-con {
 	display: flex;
 	height: 70px;
 	align-items: center;
 }
+
 .btn-fullscreen {
 	transform: rotate(45deg);
 	margin-right: 5px;
 	font-size: 24px;
 }
+
 .btn-bell,
 .btn-fullscreen {
 	position: relative;
@@ -123,6 +163,7 @@ const handleCommand = (command: string) => {
 	display: flex;
 	align-items: center;
 }
+
 .btn-bell-badge {
 	position: absolute;
 	right: 4px;
@@ -133,22 +174,48 @@ const handleCommand = (command: string) => {
 	background: #f56c6c;
 	color: #fff;
 }
+
 .btn-bell .el-icon-lx-notice {
 	color: #fff;
 }
+
 .user-name {
 	margin-left: 10px;
 }
+
 .user-avator {
 	margin-left: 20px;
 }
+
 .el-dropdown-link {
 	color: #fff;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
 }
+
 .el-dropdown-menu__item {
 	text-align: center;
 }
+
+.custom-select {
+  width: 150px; /* 自定义下拉列表的宽度 */
+}
+
+.custom-select .el-input {
+  border-color: transparent; /* 取消边框颜色 */
+  box-shadow: none; /* 取消阴影效果 */
+}
+
+.custom-select .el-input__inner {
+  padding: 5px 20px 5px 10px; /* 自定义内边距 */
+  font-size: 14px; /* 自定义字体大小 */
+}
+
+.custom-select .el-input .el-input__suffix {
+  display: none; /* 隐藏下拉图标 */
+}
+
+
+
 </style>
