@@ -285,6 +285,11 @@ const handleAdd = () => {
 };
 const saveAdd = (formEl: FormInstance | undefined) => {
 
+	if (userStore.userId === 0) {
+		ElMessage.error("请选择所属用户");
+		return false;
+	}
+
 	if (!formEl) return
 	formEl.validate((valid) => {
 		if (valid) {
@@ -350,6 +355,14 @@ const checkPracticalityValueRange = (rule: any, value: any, callback: any) => {
 	}
 };
 
+const checkPrice = (rule: any, value: any, callback: any) => {
+	if (value === 0) {
+		return callback(new Error('价格是必填的哦，选一下吧~'));
+	} else {
+		callback();
+	}
+};
+
 
 const rules = {
 	giftName: [
@@ -359,7 +372,7 @@ const rules = {
 		{ required: true, type: 'number', message: '必须选择礼物类型哦', trigger: 'blur' }
 	],
 	price: [
-		{ required: true, type: 'number', message: '价格是必填的哦', trigger: 'blur' },
+		{ required: true, type: 'number', validator: checkPrice, message: '价格是必填的哦', trigger: 'blur' },
 	],
 	infatuationScore: [
 		{ required: true, type: 'number', validator: checkInfatuationScoreRange, message: '心动值是必填的哦', trigger: 'blur' }
